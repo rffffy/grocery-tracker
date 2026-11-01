@@ -5,7 +5,7 @@ An end-to-end data pipeline that turns German supermarket receipts (photos or PD
 **Receipt photo or PDF → Claude extracts and categorises → n8n orchestrates → Python validates and loads → Postgres → Superset dashboards**
 
 ![Python](https://img.shields.io/badge/python-3.13-blue)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+![License](https://img.shields.io/badge/license-AGPL--3.0-blue)
 
 ---
 
@@ -141,4 +141,6 @@ uv run --package receipt-loader pytest src/receipt-loader/tests
 
 ## License
 
-[MIT](LICENSE)
+Copyright © 2026 Raafay Alam
+
+Licensed under [AGPL-3.0](LICENSE): free to use and modify; derivatives, including hosted services, must stay open source under the same license.
