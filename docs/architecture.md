@@ -53,7 +53,7 @@ New products arrive with the exact receipt text (`BIO VOLLMILCH 3,8%`) and the c
 
 Preset (managed Apache Superset) connects straight to Supabase using a dedicated **read-only Postgres role** (`SELECT` only, no write access). A breach on the BI side can expose data but never change or delete it.
 
-Current dashboard: **Store Activity**. It shows trip counts, stores visited, busiest weekday, a month-over-month trend, a daily visit heatmap and visits per store and weekday.
+Current dashboards: **Store Activity** (trip counts, busiest weekday, month-over-month trend, visit heatmap, visits per store and weekday) and **Spending Overview** (monthly spend by store and by category, category share). Screenshots with sample data: [dashboards.md](dashboards.md).
 
 ## Tech stack
 
@@ -93,4 +93,4 @@ No secrets are in the repo. `.env` is git-ignored; [`.env.example`](../.env.exam
 - [ ] n8n error-handler workflow (alert on any failed execution)
 - [ ] Scheduled keep-alive query so the free-tier Supabase project doesn't pause
 - [ ] NocoDB as a friendlier UI for naming products
-- [ ] Spending Overview and Product Insights dashboards
+- [ ] Product Insights dashboard (top items, most-bought, discounted items)

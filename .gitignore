@@ -31,3 +31,6 @@ steering/
 
 # Claude Code project instructions (local only)
 CLAUDE.md
+
+# Generated demo receipts (scripts/generate_demo_data.py)
+demo_data/

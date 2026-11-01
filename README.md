@@ -70,9 +70,9 @@ Four tables: `receipts` (one per trip), `receipt_items` (one per line), `product
 
 ## Dashboards
 
-**Store Activity** (Preset) shows total trips, stores visited, busiest weekday, trips this month vs last, a daily visit heatmap and visits per store and weekday.
+Two Preset dashboards: **Store Activity** (where and when shopping happens) and **Spending Overview** (spend by month, store and category).
 
-<!-- Screenshots (generated from demo data) will go here: docs/images/ -->
+👉 **[See the dashboards with sample data](docs/dashboards.md)**
 
 ## Getting started
 
@@ -113,12 +113,13 @@ uv run --package receipt-loader receipt-loader --dry-run < receipt.json
 uv run --package receipt-loader pytest src/receipt-loader/tests
 ```
 
-38 tests cover store normalisation, schema validation, the command-line flow (bad JSON, validation errors, dry run, total check) and the database logic (duplicate skip, alias reuse), using a fake database connection.
+40 tests cover store normalisation, schema validation, the command-line flow (bad JSON, validation errors, dry run, total check including basket coupons) and the database logic (duplicate skip, alias reuse), using a fake database connection.
 
 ## Project structure
 
 ```
-├── docs/                    # Architecture, schema, extraction prompt, OAuth runbook
+├── docs/                    # Architecture, schema, extraction prompt, dashboards, OAuth runbook
+├── scripts/                 # Demo data generator (fictional receipts)
 ├── n8n/workflows/           # Exported n8n workflows (placeholders for IDs)
 ├── src/receipt-loader/      # Python package: validate JSON → load into Postgres
 │   ├── receipt_loader/
@@ -137,7 +138,7 @@ uv run --package receipt-loader pytest src/receipt-loader/tests
 - [ ] Telegram alert when a receipt's items don't add up to its total
 - [ ] n8n error-handler workflow
 - [ ] NocoDB UI for naming products
-- [ ] Spending Overview and Product Insights dashboards
+- [ ] Product Insights dashboard (top items, most-bought, discounted items)
 
 ## License
 
