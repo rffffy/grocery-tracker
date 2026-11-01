@@ -1,0 +1,19 @@
+# Python artifacts
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Secrets — never in Docker
+.env
+
+# Git
+.git/
+.gitignore
+
+# n8n runtime data
+n8n_data/
+
+# macOS
+.DS_Store

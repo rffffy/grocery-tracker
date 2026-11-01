@@ -1,0 +1,33 @@
+# Secrets — never commit
+.env
+
+# Python
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.venv/
+.uv/
+
+# n8n (if exported locally)
+*.n8n.json
+
+# macOS
+.DS_Store
+
+# Claude Code session data
+.claude/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Supabase CLI temp files
+supabase/.temp/
+
+# Task plans (local only)
+plan/
+
+# Steering docs (local only)
+steering/
+
+# Claude Code project instructions (local only)
+CLAUDE.md

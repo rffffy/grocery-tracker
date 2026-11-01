@@ -1,0 +1,23 @@
+services:
+  n8n:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - GENERIC_TIMEZONE=Europe/Berlin
+      - TZ=Europe/Berlin
+      - N8N_SECURE_COOKIE=false
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - NODE_FUNCTION_ALLOW_BUILTIN=fs
+      - NODES_EXCLUDE=[]
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:

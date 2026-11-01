@@ -1,0 +1,283 @@
+{
+  "name": "single-receipt-ingest-polling",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 22
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "<DRIVE_INBOX_FOLDER_ID>",
+          "mode": "id"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        -32
+      ],
+      "id": "6b98ba8c-0a88-480f-b8e2-fbb20cfc535e",
+      "name": "File Created Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "<GOOGLE_DRIVE_CREDENTIAL_ID>",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=sh -c \"uv run --directory /home/node/project receipt-loader < {{ $json.tmpPath }} && rm {{ $json.tmpPath }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -32
+      ],
+      "id": "a5d28a84-fa16-457b-80fb-ae56ec7c2e53",
+      "name": "Run receipt-loader"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "c6dc2676-5a38-4f0b-8c53-5ab5747d3421",
+      "name": "Download File",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "<GOOGLE_DRIVE_CREDENTIAL_ID>",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const { writeFileSync } = require('fs');\nconst buffer = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst tmpPath = `/tmp/receipt-${Date.now()}.json`;\nwriteFileSync(tmpPath, buffer);\nreturn [{ json: { tmpPath } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        -32
+      ],
+      "id": "3ec423e0-47a0-4772-9189-af69f7987024",
+      "name": "Write To Temp File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout.trim();\nreturn [{ json: JSON.parse(stdout) }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        -32
+      ],
+      "id": "e9439dc0-419c-4df3-96b9-42f5876af4c1",
+      "name": "Parse Output"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cc6c6a27-827b-4045-9c2a-1d90019aaadb",
+              "leftValue": "={{ $json.new_aliases.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        -32
+      ],
+      "id": "b07a80a6-3f98-46fb-b391-6af5f8816f61",
+      "name": "New Aliases?"
+    },
+    {
+      "parameters": {
+        "chatId": "<TELEGRAM_CHAT_ID>",
+        "text": "=🟢 🧾 <b>New Aliases</b> 🧾\n\n<b>Receipt ID:</b> {{ $('Parse Output').item.json.receipt_id }}\n\nUpdate them in the Database (product aliases table):\n\n{{ $json.new_aliases.map(a => '• ID ' + a.alias_id + ' · ' + a.store + ' · ' + a.raw_name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + (a.category_id === 12 ? ' · ⚠️  Uncategorized' : '')).join('\\n') }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -192
+      ],
+      "id": "e70c5b22-51f1-4a14-ac1d-dd9ca4d9d07e",
+      "name": "Notify New Aliases",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('File Created Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "<DRIVE_PROCESSED_FOLDER_ID>",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -32
+      ],
+      "id": "2373333d-5f30-4105-bbf6-3821f52dd2e1",
+      "name": "Move To Processed",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "<GOOGLE_DRIVE_CREDENTIAL_ID>",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "File Created Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run receipt-loader": {
+      "main": [
+        [
+          {
+            "node": "Parse Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Write To Temp File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write To Temp File": {
+      "main": [
+        [
+          {
+            "node": "Run receipt-loader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output": {
+      "main": [
+        [
+          {
+            "node": "New Aliases?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Aliases?": {
+      "main": [
+        [
+          {
+            "node": "Notify New Aliases",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Move To Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify New Aliases": {
+      "main": [
+        [
+          {
+            "node": "Move To Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  }
+}

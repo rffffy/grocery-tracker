@@ -1,0 +1,21 @@
+[project]
+name = "receipt-loader"
+version = "0.1.0"
+description = "Receipt JSON → Supabase pipeline"
+requires-python = ">=3.13"
+dependencies = [
+    "psycopg[binary]>=3.3.4",
+    "pydantic>=2.13.4",
+]
+
+[project.scripts]
+receipt-loader = "receipt_loader.main:main_sync"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
