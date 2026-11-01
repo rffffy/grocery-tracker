@@ -29,8 +29,8 @@ Drive trigger / list inbox
 
 | Placeholder | Where | Value |
 |-------------|-------|-------|
-| `<DRIVE_INBOX_FOLDER_ID>` | Drive trigger / "List Inbox Files" query | ID of your `Receipts/inbox` folder (the last part of the folder URL) |
-| `<DRIVE_PROCESSED_FOLDER_ID>` | "Move To Processed" | ID of your `Receipts/processed` folder |
+| `<DRIVE_INBOX_FOLDER_ID>` | Drive trigger / "List Inbox Files" query | ID of your `Receipts/Inbox` folder (the last part of the folder URL) |
+| `<DRIVE_PROCESSED_FOLDER_ID>` | "Move To Processed" | ID of your `Receipts/Processed` folder |
 | `<TELEGRAM_CHAT_ID>` | "Notify New Aliases" | Your Telegram chat ID |
 | `<GOOGLE_DRIVE_CREDENTIAL_ID>`, `<TELEGRAM_CREDENTIAL_ID>` | Credential fields | Pick your own credentials in the UI; n8n replaces these automatically |
 

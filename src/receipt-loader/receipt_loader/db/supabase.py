@@ -26,7 +26,14 @@ async def load_receipt(receipt: Receipt) -> dict:
                     INSERT INTO receipts (receipt_id, date, time, store, receipt_total, store_wide_discount)
                     VALUES (%s, %s, %s, %s, %s, %s)
                     """,
-                    (receipt.receipt_id, receipt.date, receipt.time, receipt.store, receipt.receipt_total, receipt.store_wide_discount),
+                    (
+                        receipt.receipt_id,
+                        receipt.date,
+                        receipt.time,
+                        receipt.store,
+                        receipt.receipt_total,
+                        receipt.store_wide_discount,
+                    ),
                 )
 
                 for item in receipt.items:

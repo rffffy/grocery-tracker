@@ -1,2 +1,12 @@
 [tool.uv.workspace]
 members = ["src/*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["receipt_loader"]

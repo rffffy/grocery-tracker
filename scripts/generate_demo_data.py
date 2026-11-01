@@ -13,7 +13,7 @@ All data is made up. The same --seed always produces the same receipts.
 import argparse
 import json
 import random
-from datetime import date, datetime, time, timedelta
+from datetime import date, time, timedelta
 from pathlib import Path
 
 from receipt_loader.models.receipt import Receipt

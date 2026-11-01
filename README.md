@@ -20,7 +20,7 @@ German receipts make this harder than it sounds: cryptic abbreviations (`TAV.OGS
 ```mermaid
 flowchart LR
     A[🧾 Receipt<br/>photo or PDF] --> B[Claude agent<br/>extract + categorise]
-    B -->|reviewed JSON| C[(Google Drive<br/>inbox)]
+    B -->|reviewed JSON| C[(Google Drive<br/>Receipts/Inbox)]
     C --> D[n8n]
     D -->|stdin| E[receipt-loader<br/>Python]
     E --> F[(Supabase<br/>Postgres)]
@@ -29,7 +29,7 @@ flowchart LR
 ```
 
 1. **Extract:** a receipt photo or PDF goes to a Claude agent running a [detailed extraction prompt](docs/extraction-prompt.md). Claude returns structured JSON with a category for every item, and flags anything uncertain instead of guessing. After a quick review in chat, it saves the file to a Google Drive inbox.
-2. **Orchestrate:** an [n8n workflow](n8n/) polls the inbox, passes each file to the loader, sends a Telegram message listing products it hasn't seen before, and moves the file to `processed/`.
+2. **Orchestrate:** an [n8n workflow](n8n/) polls the inbox, passes each file to the loader, sends a Telegram message listing products it hasn't seen before, and moves the file to `Receipts/Processed`.
 3. **Load:** [`receipt-loader`](src/receipt-loader) validates the JSON with Pydantic, normalises store names, skips receipts it has already loaded, and writes everything to Postgres in one transaction.
 4. **Curate:** new products get a human-readable name once in `product_aliases`. Every later purchase of the same product at the same store is then named automatically.
 5. **Analyse:** Preset (managed Apache Superset) reads from Postgres through a read-only role.

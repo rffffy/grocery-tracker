@@ -10,6 +10,7 @@ services:
       - N8N_PROTOCOL=http
       - GENERIC_TIMEZONE=Europe/Berlin
       - TZ=Europe/Berlin
+      # Local-only setup served over plain http on localhost; enable when running behind HTTPS
       - N8N_SECURE_COOKIE=false
       - N8N_RUNNERS_ENABLED=true
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
