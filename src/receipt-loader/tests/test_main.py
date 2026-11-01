@@ -104,6 +104,26 @@ def test_rounding_within_one_cent_is_tolerated(monkeypatch, capsys, fake_load, r
     assert "sanity_warning" not in out
 
 
+def test_basket_coupon_is_subtracted_before_comparing(monkeypatch, capsys, fake_load, receipt_data):
+    # Items sum to 7.47; a 0.75 store-wide coupon brings the amount paid to 6.72
+    receipt_data["store_wide_discount"] = 0.75
+    receipt_data["receipt_total"] = 6.72
+
+    out, _ = run_cli(monkeypatch, capsys, json.dumps(receipt_data))
+
+    assert out["status"] == "inserted"
+    assert "sanity_warning" not in out
+
+
+def test_coupon_receipt_that_does_not_add_up_still_warns(monkeypatch, capsys, fake_load, receipt_data):
+    receipt_data["store_wide_discount"] = 0.75
+    receipt_data["receipt_total"] = 7.47  # coupon not reflected in the total
+
+    out, _ = run_cli(monkeypatch, capsys, json.dumps(receipt_data))
+
+    assert out["sanity_warning"] is True
+
+
 def test_skipped_receipt_gets_no_sanity_check(monkeypatch, capsys, receipt_data):
     async def _already_loaded(receipt):
         return {"status": "skipped", "receipt_id": receipt.receipt_id}

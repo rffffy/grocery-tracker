@@ -39,8 +39,9 @@ async def main() -> None:
     result = await load_receipt(receipt)
 
     if result["status"] == "inserted":
+        # Items are stored before basket-level coupons: items − coupon should equal the total paid
         item_sum = sum(item.total_price for item in receipt.items)
-        if abs(item_sum - receipt.receipt_total) > 0.01:
+        if abs(item_sum - receipt.store_wide_discount - receipt.receipt_total) > 0.01:
             result["sanity_warning"] = True
             result["item_sum"] = round(item_sum, 2)
             result["receipt_total"] = receipt.receipt_total
